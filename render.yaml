@@ -1,0 +1,25 @@
+services:
+  # ── Backend API ──────────────────────────────────────────────────────────────
+  - type: web
+    name: eventsphere-api
+    runtime: node
+    region: oregon          # Free tier region
+    plan: free
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: false   # Render injects PORT automatically
+      # ── Secrets — set these in the Render dashboard ──────────────────────────
+      - key: MONGO_URI
+        sync: false            # Mark as secret — you set this manually in dashboard
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        sync: false            # Set to your Vercel frontend URL after deploy
